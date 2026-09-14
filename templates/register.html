@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Monitor - Register</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<div class="auth-container">
+
+    <div class="auth-card">
+
+        <h1>Create Account</h1>
+
+        <input id="username" type="text" placeholder="Username">
+
+        <input id="password" type="password" placeholder="Password">
+
+        <button onclick="register()">Register</button>
+
+        <p id="message"></p>
+
+        <a href="/login">Already have an account?</a>
+
+    </div>
+
+</div>
+
+<script>
+
+async function register() {
+
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const response = await fetch("/api/auth/register", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            username,
+            password
+        })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("message").textContent =
+        data.message || data.error;
+
+    if (response.ok) {
+
+        setTimeout(() => {
+            window.location.href = "/login";
+        }, 1000);
+    }
+}
+
+</script>
+
+</body>
+</html>

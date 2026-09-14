@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>API Monitor</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/style.css"
+    >
+
+    <!-- Chart.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ◉
+            </div>
+
+            <div>
+
+                <h2>
+                    API Monitor
+                </h2>
+
+                <span>
+                    Monitoring Center
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav-section">
+
+            <p>MENU</p>
+
+
+            <a
+                href="#dashboard"
+                class="nav-item active"
+            >
+
+                <span>▦</span>
+
+                Dashboard
+
+            </a>
+
+
+            <a
+                href="#apis"
+                class="nav-item"
+            >
+
+                <span>◉</span>
+
+                APIs
+
+            </a>
+
+
+            <a
+                href="#incidents"
+                class="nav-item"
+            >
+
+                <span>⚠</span>
+
+                Incidents
+
+            </a>
+
+
+            <a
+                href="#analytics"
+                class="nav-item"
+            >
+
+                <span>⌁</span>
+
+                Analytics
+
+            </a>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="monitor-box">
+
+                <div class="pulse"></div>
+
+                <div>
+
+                    <strong>
+                        Monitoring Active
+                    </strong>
+
+                    <small>
+                        Automatic checks running
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="logout-button"
+                onclick="logout()"
+            >
+
+                ⇥ Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <main
+        class="content"
+        id="dashboard"
+    >
+
+
+        <!-- HEADER -->
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="small-title">
+                    OVERVIEW
+                </p>
+
+                <h1>
+                    API Dashboard
+                </h1>
+
+                <p class="subtitle">
+                    Monitor your services, performance and incidents.
+                </p>
+
+            </div>
+
+
+            <div class="live-status">
+
+                <span class="live-dot"></span>
+
+                Live monitoring
+
+            </div>
+
+        </header>
+
+
+
+        <!-- STATS -->
+
+        <section class="stats">
+
+
+            <div class="stat-card purple">
+
+                <div class="stat-top">
+
+                    <span>
+                        Total APIs
+                    </span>
+
+                    <div class="stat-icon">
+                        ⌁
+                    </div>
+
+                </div>
+
+                <strong id="totalApis">
+                    0
+                </strong>
+
+                <p>
+                    Monitored services
+                </p>
+
+            </div>
+
+
+
+            <div class="stat-card green">
+
+                <div class="stat-top">
+
+                    <span>
+                        Healthy
+                    </span>
+
+                    <div class="stat-icon">
+                        ✓
+                    </div>
+
+                </div>
+
+                <strong id="healthyApis">
+                    0
+                </strong>
+
+                <p>
+                    Services operational
+                </p>
+
+            </div>
+
+
+
+            <div class="stat-card pink">
+
+                <div class="stat-top">
+
+                    <span>
+                        Down
+                    </span>
+
+                    <div class="stat-icon">
+                        !
+                    </div>
+
+                </div>
+
+                <strong id="downApis">
+                    0
+                </strong>
+
+                <p>
+                    Require attention
+                </p>
+
+            </div>
+
+
+
+            <div class="stat-card blue">
+
+                <div class="stat-top">
+
+                    <span>
+                        Open Incidents
+                    </span>
+
+                    <div class="stat-icon">
+                        ⚠
+                    </div>
+
+                </div>
+
+                <strong id="incidentCount">
+                    0
+                </strong>
+
+                <p>
+                    Active incidents
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ADD API -->
+
+        <section class="panel add-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2>
+                        Add a monitored API
+                    </h2>
+
+                    <p>
+                        Start monitoring a new endpoint.
+                    </p>
+
+                </div>
+
+                <div class="api-symbol">
+                    +
+                </div>
+
+            </div>
+
+
+            <div class="form-row">
+
+
+                <div class="input-group">
+
+                    <label>
+                        API Name
+                    </label>
+
+                    <input
+                        id="serviceName"
+                        type="text"
+                        placeholder="e.g. Payment API"
+                    >
+
+                </div>
+
+
+                <div class="input-group url-input">
+
+                    <label>
+                        Endpoint URL
+                    </label>
+
+                    <input
+                        id="serviceUrl"
+                        type="text"
+                        placeholder="https://example.com"
+                    >
+
+                </div>
+
+
+                <div class="input-group method-input">
+
+                    <label>
+                        Method
+                    </label>
+
+                    <select id="serviceMethod">
+
+                        <option value="GET">
+                            GET
+                        </option>
+
+                        <option value="POST">
+                            POST
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="input-group button-group">
+
+                    <label>
+                        &nbsp;
+                    </label>
+
+                    <button
+                        class="add-button"
+                        onclick="addService()"
+                    >
+
+                        + Add API
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- APIS -->
+
+        <section
+            class="panel"
+            id="apis"
+        >
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2>
+                        Monitored APIs
+                    </h2>
+
+                    <p>
+                        Real-time health and performance.
+                    </p>
+
+                </div>
+
+                <span class="refresh-label">
+                    ● Updates automatically
+                </span>
+
+            </div>
+
+
+            <div id="servicesContainer"></div>
+
+        </section>
+
+
+
+        <!-- INCIDENTS -->
+
+        <section
+            class="panel"
+            id="incidents"
+        >
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2>
+                        Recent Incidents
+                    </h2>
+
+                    <p>
+                        Issues detected by the monitoring system.
+                    </p>
+
+                </div>
+
+                <span class="incident-label">
+                    INCIDENTS
+                </span>
+
+            </div>
+
+
+            <div id="incidentsContainer"></div>
+
+        </section>
+
+
+
+        <!-- ANALYTICS -->
+
+        <section
+            class="panel"
+            id="analytics"
+        >
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2 id="analyticsTitle">
+                        Analytics
+                    </h2>
+
+                    <p>
+                        Performance and uptime history.
+                    </p>
+
+                </div>
+
+                <span class="refresh-label">
+                    MONITORING DATA
+                </span>
+
+            </div>
+
+
+            <!-- ANALYTICS CARDS -->
+
+            <div
+                class="analytics-grid"
+                id="analyticsStats"
+            >
+
+                <div class="analytics-card">
+
+                    <span>
+                        Uptime
+                    </span>
+
+                    <strong id="uptimeValue">
+                        0%
+                    </strong>
+
+                    <p>
+                        Successful checks
+                    </p>
+
+                </div>
+
+
+                <div class="analytics-card">
+
+                    <span>
+                        Average Response
+                    </span>
+
+                    <strong id="averageResponse">
+                        0 ms
+                    </strong>
+
+                    <p>
+                        Average API response
+                    </p>
+
+                </div>
+
+
+                <div class="analytics-card">
+
+                    <span>
+                        Total Checks
+                    </span>
+
+                    <strong id="totalChecks">
+                        0
+                    </strong>
+
+                    <p>
+                        Monitoring attempts
+                    </p>
+
+                </div>
+
+
+                <div class="analytics-card">
+
+                    <span>
+                        Failed Checks
+                    </span>
+
+                    <strong id="failedChecks">
+                        0
+                    </strong>
+
+                    <p>
+                        Failed requests
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- GRAPHS -->
+
+            <div class="charts-grid">
+
+
+                <div class="chart-card">
+
+                    <div class="chart-header">
+
+                        <div>
+
+                            <h3>
+                                Response Time
+                            </h3>
+
+                            <p>
+                                API response performance
+                            </p>
+
+                        </div>
+
+                        <span>
+                            ms
+                        </span>
+
+                    </div>
+
+
+                    <div class="chart-wrapper">
+
+                        <canvas
+                            id="responseChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chart-card">
+
+                    <div class="chart-header">
+
+                        <div>
+
+                            <h3>
+                                Uptime History
+                            </h3>
+
+                            <p>
+                                Health status of recent checks
+                            </p>
+
+                        </div>
+
+                        <span>
+                            STATUS
+                        </span>
+
+                    </div>
+
+
+                    <div class="chart-wrapper">
+
+                        <canvas
+                            id="uptimeChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- HISTORY -->
+
+            <div
+                class="history-container"
+                id="historyContainer"
+            >
+
+                <div class="history-header">
+
+                    <div>
+
+                        <h3>
+                            Recent Monitoring Checks
+                        </h3>
+
+                        <p>
+                            Select Analytics on an API to view its history.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <footer>
+
+            API Monitor · Automatic monitoring every 60 seconds
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+
+<script src="/static/js/dashboard.js"></script>
+
+
+<script>
+
+    /* ==============================
+       SIDEBAR
+    ============================== */
+
+    const navItems =
+        document.querySelectorAll(".nav-item");
+
+
+    navItems.forEach(item => {
+
+        item.addEventListener(
+            "click",
+            function() {
+
+                navItems.forEach(nav => {
+
+                    nav.classList.remove(
+                        "active"
+                    );
+
+                });
+
+
+                this.classList.add(
+                    "active"
+                );
+
+            }
+        );
+
+    });
+
+
+</script>
+
+</body>
+
+</html>
