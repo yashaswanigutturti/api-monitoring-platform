@@ -1,130 +1,106 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - API Monitor</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>API Monitor - Create Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
-<body>
+<body class="auth-page">
 
-<div class="auth-container">
+    <div class="auth-card">
 
-```
-<div class="auth-card">
+        <div class="brand">
+            <div class="brand-icon">↗</div>
+            <span>API Monitor</span>
+        </div>
 
-    <div class="brand">
-        <div class="brand-icon">◉</div>
-        <span>API Monitor</span>
+        <div class="auth-content">
+            <h1>Create Account</h1>
+            <p class="subtitle">
+                Start monitoring your APIs in seconds.
+            </p>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    id="username"
+                    type="text"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    autocomplete="new-password"
+                >
+            </div>
+
+            <button class="register-btn" onclick="register()">
+                Create Account
+            </button>
+
+            <p id="message"></p>
+
+            <p class="login-text">
+                Already have an account?
+                <a href="/login">Sign in</a>
+            </p>
+        </div>
+
     </div>
 
-    <div class="auth-header">
-        <h1>Create Account</h1>
-        <p>Start monitoring your APIs in seconds.</p>
-    </div>
+    <script>
+        async function register() {
 
-    <div class="form-group">
-        <label for="username">Username</label>
-        <input
-            id="username"
-            type="text"
-            placeholder="Enter your username"
-            autocomplete="username"
-        >
-    </div>
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value;
+            const message = document.getElementById("message");
 
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input
-            id="password"
-            type="password"
-            placeholder="Create a password"
-            autocomplete="new-password"
-        >
-    </div>
+            if (!username || !password) {
+                message.textContent = "Please enter a username and password.";
+                message.className = "error";
+                return;
+            }
 
-    <button class="auth-button" onclick="register()">
-        Create Account
-    </button>
+            try {
+                const response = await fetch("/api/auth/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
 
-    <p id="message"></p>
+                const data = await response.json();
 
-    <div class="auth-footer">
-        <span>Already have an account?</span>
-        <a href="/login">Sign in</a>
-    </div>
+                message.textContent = data.message || data.error;
 
-</div>
-```
+                if (response.ok) {
+                    message.className = "success";
 
-</div>
+                    setTimeout(() => {
+                        window.location.href = "/login";
+                    }, 1000);
+                } else {
+                    message.className = "error";
+                }
 
-<script>
-
-async function register() {
-
-    const username =
-        document.getElementById("username").value.trim();
-
-    const password =
-        document.getElementById("password").value;
-
-    const message =
-        document.getElementById("message");
-
-    if (!username || !password) {
-        message.textContent = "Please enter a username and password.";
-        message.className = "error-message";
-        return;
-    }
-
-    try {
-
-        const response = await fetch("/api/auth/register", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                username,
-                password
-            })
-        });
-
-        const data = await response.json();
-
-        message.textContent =
-            data.message || data.error;
-
-        if (response.ok) {
-
-            message.className = "success-message";
-
-            setTimeout(() => {
-                window.location.href = "/login";
-            }, 1000);
-
-        } else {
-
-            message.className = "error-message";
-
+            } catch (error) {
+                message.textContent = "Something went wrong. Please try again.";
+                message.className = "error";
+            }
         }
-
-    } catch (error) {
-
-        message.textContent =
-            "Unable to connect to the server.";
-
-        message.className = "error-message";
-    }
-}
-
-</script>
+    </script>
 
 </body>
 </html>
